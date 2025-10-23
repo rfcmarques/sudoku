@@ -108,7 +108,7 @@ const Game: React.FC = () => {
             />
 
             <div className="mt-4 text-center text-gray-500">
-                Selecione uma célula e use os números do seu teclado (1-9) para preencher.
+                Selecione uma célula e use os números do teu teclado (1-9) para preencher.
             </div>
 
             <Controls onCheck={checkSolution} />
