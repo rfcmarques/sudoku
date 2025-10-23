@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Board as BoardType, CellPosition, CellValue } from '../types/types';
 import { initialBoard, solutionBoard } from '../utils/sudoku';
 import Board from './Board';
@@ -9,8 +9,11 @@ const Game: React.FC = () => {
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isComplete, setIsComplete] = useState<boolean>(false);
 
+    const hiddenInputRef = useRef<HTMLInputElement>(null);
+
     const handleCellClick = (row: number, col: number) => {
         setSelectedCell({ row, col });
+        hiddenInputRef.current?.focus();
     };
 
     const handleNumberInput = useCallback((value: CellValue) => {
@@ -47,7 +50,22 @@ const Game: React.FC = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }
-    }, [selectedCell, handleNumberInput])
+    }, [selectedCell, handleNumberInput, isComplete]);
+
+    const handleMobileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        if (value === '') return;
+
+        const lastDigit = value.slice(-1);
+
+        if (lastDigit >= '1' && lastDigit <= '9') {
+            const number = parseInt(lastDigit, 10) as CellValue;
+            handleNumberInput(number);
+        }
+
+        e.target.value = '';
+    };
 
     const checkSolution = () => {
         const currentBoardStr = JSON.stringify(board);
@@ -68,14 +86,31 @@ const Game: React.FC = () => {
                     <span className="font-bold">Parabéns!</span> Resolveste o Sudoku! 🥳
                 </div>
             )}
+
             <Board
                 board={board}
                 onCellClick={handleCellClick}
                 selectedCell={selectedCell}
             />
+
+            <input
+                ref={hiddenInputRef}
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                onChange={handleMobileInputChange}
+                style={{
+                    position: 'absolute',
+                    opacity: 0,
+                    top: '-9999px',
+                    left: '-9999px',
+                }}
+            />
+
             <div className="mt-4 text-center text-gray-500">
                 Selecione uma célula e use os números do seu teclado (1-9) para preencher.
             </div>
+
             <Controls onCheck={checkSolution} />
         </div>
     );
