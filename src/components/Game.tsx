@@ -31,8 +31,6 @@ const Game: React.FC = () => {
 
             if (!selectedCell) return;
 
-            console.log(`Tecla pressionada: ${event.key}`);
-
             if (event.key >= '1' && event.key <= '9') {
                 const number = parseInt(event.key, 10) as CellValue;
                 handleNumberInput(number);
