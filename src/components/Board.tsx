@@ -10,7 +10,12 @@ interface BoardProps {
 
 const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
     return (
-        <div className="grid grid-cols-9 w-max border-4 border-gray-800 mx-auto my-5">
+        <div className="
+            grid grid-cols-9 
+            w-[90vw] max-w-md 
+            mx-auto my-5
+            border-4 border-gray-800 
+        ">
             {board.map((row, rowIndex) =>
                 row.map((cellValue, colIndex) => (
                     <Cell
