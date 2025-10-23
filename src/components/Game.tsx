@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import type { Board as BoardType } from '../types/types';
+import type { Board as BoardType, CellPosition } from '../types/types';
 import { initialBoard } from '../utils/sudoku';
 import Board from './Board';
 
 const Game: React.FC = () => {
-    // Usamos o useState para guardar o estado atual do tabuleiro
-    // e inicializamo-lo com o nosso puzzle.
     const [board, setBoard] = useState<BoardType>(initialBoard);
+    const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
 
-    // Por agora, este componente apenas renderiza o tabuleiro.
+    const handleCellClick = (row: number, col: number) => {
+        setSelectedCell({ row, col });
+        console.log(`Célula selecionada: Linha ${row}, Coluna ${col}`);
+    };
+
     return (
         <div className="game">
-            <Board board={board} />
+            <Board
+                board={board}
+                onCellClick={handleCellClick}
+                selectedCell={selectedCell}
+            />
         </div>
     );
 };

@@ -1,16 +1,14 @@
 import React from 'react';
-import type { Board as BoardType } from '../types/types';
+import type { Board as BoardType, CellPosition } from '../types/types';
 import Cell from './Cell';
 
 interface BoardProps {
     board: BoardType;
+    selectedCell: CellPosition;
+    onCellClick: (row: number, col: number) => void;
 }
 
-interface BoardProps {
-    board: BoardType;
-}
-
-const Board: React.FC<BoardProps> = ({ board }) => {
+const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
     return (
         <div className="grid grid-cols-9 w-max border-4 border-gray-800 mx-auto my-5">
             {board.map((row, rowIndex) =>
@@ -20,6 +18,10 @@ const Board: React.FC<BoardProps> = ({ board }) => {
                         value={cellValue}
                         rowIndex={rowIndex}
                         colIndex={colIndex}
+                        onCellClick={onCellClick}
+                        isSelected={
+                            selectedCell?.row === rowIndex && selectedCell?.col === colIndex
+                        }
                     />
                 ))
             )}
