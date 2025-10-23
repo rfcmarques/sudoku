@@ -80,7 +80,7 @@ const Game: React.FC = () => {
     }
 
     return (
-        <div className="game">
+        <div className="game p-4 sm:p-6 bg-white rounded-xl shadow-lg">
             {isComplete && (
                 <div className="p-4 mb-4 text-lg text-center text-green-800 bg-green-100 rounded-lg" role="alert">
                     <span className="font-bold">Parabéns!</span> Resolveste o Sudoku! 🥳
