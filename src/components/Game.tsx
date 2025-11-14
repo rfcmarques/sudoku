@@ -11,9 +11,21 @@ const Game: React.FC = () => {
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-    const handleCellClick = (row: number, col: number) => {
+    const handleCellClick = (
+        row: number,
+        col: number,
+        event: React.MouseEvent<HTMLDivElement>
+    ) => {
         setSelectedCell({ row, col });
         hiddenInputRef.current?.focus();
+
+
+        setTimeout(() => {
+            event.currentTarget.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }, 100);
     };
 
     const handleNumberInput = useCallback((value: CellValue) => {

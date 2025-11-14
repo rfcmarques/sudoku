@@ -7,10 +7,20 @@ interface CellProps {
     rowIndex: number;
     colIndex: number;
     isSelected: boolean;
-    onCellClick: (row: number, col: number) => void;
+    onCellClick: (
+        row: number,
+        col: number,
+        event: React.MouseEvent<HTMLDivElement>
+    ) => void;
 }
 
-const Cell: React.FC<CellProps> = ({ value, rowIndex, colIndex, isSelected, onCellClick }) => {
+const Cell: React.FC<CellProps> = ({
+    value,
+    rowIndex,
+    colIndex,
+    isSelected,
+    onCellClick,
+}) => {
     // Lógica para as bordas dos blocos 3x3
     const getBorderClasses = () => {
         let classes = '';
@@ -35,7 +45,7 @@ const Cell: React.FC<CellProps> = ({ value, rowIndex, colIndex, isSelected, onCe
               ${selectedClass}
               ${initialValueClass}
             `}
-            onClick={() => onCellClick(rowIndex, colIndex)}
+            onClick={(event) => onCellClick(rowIndex, colIndex, event)}
         >
             {value !== 0 ? value : ''}
         </div>

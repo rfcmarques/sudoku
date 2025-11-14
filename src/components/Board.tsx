@@ -5,7 +5,11 @@ import Cell from './Cell';
 interface BoardProps {
     board: BoardType;
     selectedCell: CellPosition;
-    onCellClick: (row: number, col: number) => void;
+    onCellClick: (
+        row: number,
+        col: number,
+        event: React.MouseEvent<HTMLDivElement>
+    ) => void;
 }
 
 const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
