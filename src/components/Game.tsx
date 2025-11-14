@@ -19,13 +19,14 @@ const Game: React.FC = () => {
         setSelectedCell({ row, col });
         hiddenInputRef.current?.focus();
 
-
-        setTimeout(() => {
-            event.currentTarget.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
-        }, 500);
+        if (row > 3) {
+            setTimeout(() => {
+                event.currentTarget.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+            }, 500);
+        }
     };
 
     const handleNumberInput = useCallback((value: CellValue) => {
