@@ -25,7 +25,7 @@ const Game: React.FC = () => {
                 behavior: 'smooth',
                 block: 'center',
             });
-        }, 100);
+        }, 500);
     };
 
     const handleNumberInput = useCallback((value: CellValue) => {
