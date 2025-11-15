@@ -23,7 +23,7 @@ const Game: React.FC = () => {
             setTimeout(() => {
                 event.currentTarget.scrollIntoView({
                     behavior: 'smooth',
-                    block: 'center',
+                    block: 'nearest',
                 });
             }, 500);
         }
@@ -115,8 +115,8 @@ const Game: React.FC = () => {
                 style={{
                     position: 'absolute',
                     opacity: 0,
-                    top: '-9999px',
-                    left: '-9999px',
+                    top: '1px',
+                    left: '1px',
                 }}
             />
 
