@@ -44,6 +44,7 @@ const Cell: React.FC<CellProps> = ({
               ${selectedClass}
               ${initialValueClass}
             `}
+            data-testid={`cell-${rowIndex}-${colIndex}`}
             onClick={() => onCellClick(rowIndex, colIndex)}
         >
             {value !== 0 ? value : ''}
