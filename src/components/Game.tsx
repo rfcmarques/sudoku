@@ -3,32 +3,54 @@ import type {
     Board as BoardType,
     CellPosition,
     CellValue,
+    DifficultyLevel,
     Puzzle
 } from '../types/types';
+
 import { puzzles } from '../utils/puzzles';
+
 import Board from './Board';
 import Controls from './Controls';
+import DifficultyModal from './DifficultyModal';
 
-const getRandomPuzzle = (): Puzzle => {
-    const randomIndex = Math.floor(Math.random() * puzzles.length);
-    return puzzles[randomIndex];
-};
+const getPuzzleByLevel = (level: DifficultyLevel): Puzzle => {
+    const filteredPuzzles = puzzles.filter(
+        (puzzle) => puzzle.level === level
+    );
+
+    if (filteredPuzzles.length === 0) {
+        return puzzles.find(p => p.level === 'easy')!;
+    }
+
+    const randomIndex = Math.floor(Math.random() * filteredPuzzles.length);
+    return filteredPuzzles[randomIndex];
+}
 
 const Game: React.FC = () => {
-    const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(getRandomPuzzle());
+    const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(getPuzzleByLevel('easy'));
     const [board, setBoard] = useState<BoardType>(currentPuzzle.board);
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isComplete, setIsComplete] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
-    const startNewGame = () => {
-        const newPuzzle = getRandomPuzzle();
+    const startNewGame = (level: DifficultyLevel) => {
+        const newPuzzle = getPuzzleByLevel(level);
         setCurrentPuzzle(newPuzzle);
         setBoard(newPuzzle.board);
         setSelectedCell(null);
         setIsComplete(false);
+    }
+
+    const handleSelectDifficulty = (level: DifficultyLevel) => {
+        startNewGame(level);
+        setIsModalOpen(false);
+    }
+
+    const openNewGameModal = () => {
+        setIsModalOpen(true);
     }
 
     const handleCellClick = (
@@ -141,13 +163,19 @@ const Game: React.FC = () => {
                 }}
             />
 
+            <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
+
             <div className="mt-4 text-center text-gray-500">
                 Selecione uma célula e use os números do teu teclado (1-9) para preencher.
             </div>
 
-            <Controls onCheck={checkSolution} onNewGame={startNewGame} />
+            <Controls onCheck={checkSolution} onNewGame={openNewGameModal} />
 
-            <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
+            <DifficultyModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSelectDifficulty={handleSelectDifficulty}
+            />
         </div>
     );
 };
