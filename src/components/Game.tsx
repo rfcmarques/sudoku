@@ -14,8 +14,7 @@ const Game: React.FC = () => {
 
     const handleCellClick = (
         row: number,
-        col: number,
-        event: React.MouseEvent<HTMLDivElement>
+        col: number
     ) => {
         setSelectedCell({ row, col });
         hiddenInputRef.current?.focus({ preventScroll: true });

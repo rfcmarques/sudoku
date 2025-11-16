@@ -7,8 +7,7 @@ interface BoardProps {
     selectedCell: CellPosition;
     onCellClick: (
         row: number,
-        col: number,
-        event: React.MouseEvent<HTMLDivElement>
+        col: number
     ) => void;
 }
 

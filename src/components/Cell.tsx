@@ -10,7 +10,6 @@ interface CellProps {
     onCellClick: (
         row: number,
         col: number,
-        event: React.MouseEvent<HTMLDivElement>
     ) => void;
 }
 
@@ -45,7 +44,7 @@ const Cell: React.FC<CellProps> = ({
               ${selectedClass}
               ${initialValueClass}
             `}
-            onClick={(event) => onCellClick(rowIndex, colIndex, event)}
+            onClick={() => onCellClick(rowIndex, colIndex)}
         >
             {value !== 0 ? value : ''}
         </div>
