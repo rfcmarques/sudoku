@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import toast from 'react-hot-toast';
 import type {
     Board as BoardType,
     CellPosition,
@@ -126,7 +127,7 @@ const Game: React.FC = () => {
         const solutionBoardStr = JSON.stringify(currentPuzzle.solution);
 
         if (currentBoardStr !== solutionBoardStr) {
-            alert('O Sudoku não está correto. Tente novamente!');
+            toast.error('O Sudoku não está correto. Tente novamente!');
             return;
         }
 
@@ -146,7 +147,7 @@ const Game: React.FC = () => {
         })
 
         if (emptyCells.length === 0) {
-            alert('Não há células vazias para dar uma dica!');
+            toast.error('Não há células vazias para dar uma dica!');
             return;
         }
 

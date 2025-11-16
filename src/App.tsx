@@ -1,5 +1,6 @@
 import './App.css';
 import Game from './components/Game';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -8,6 +9,17 @@ function App() {
         Sudoku
       </h1>
       <Game />
+
+      <Toaster
+        position="bottom-center"
+        gutter={8}
+        toastOptions={{
+          style: {
+            background: '#334155',
+            color: '#f1f5f9',
+          },
+        }}
+      />
     </main>
   );
 }
