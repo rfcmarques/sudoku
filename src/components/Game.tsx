@@ -134,6 +134,32 @@ const Game: React.FC = () => {
         setSelectedCell(null);
     }
 
+    const handleHint = () => {
+        const emptyCells: { row: number; col: number }[] = [];
+
+        board.forEach((row, rIndex) => {
+            row.forEach((cellValue, cIndex) => {
+                if (cellValue === 0) {
+                    emptyCells.push({ row: rIndex, col: cIndex });
+                }
+            })
+        })
+
+        if (emptyCells.length === 0) {
+            alert('Não há células vazias para dar uma dica!');
+            return;
+        }
+
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        const { row, col } = randomCell;
+
+        const solutionValue = currentPuzzle.solution[row][col];
+
+        const newBoard = board.map(rowArray => [...rowArray]);
+        newBoard[row][col] = solutionValue;
+        setBoard(newBoard);
+    }
+
     return (
         <div className="game p-4 sm:p-6 bg-white rounded-xl shadow-lg">
             {isComplete && (
@@ -169,7 +195,11 @@ const Game: React.FC = () => {
                 Selecione uma célula e use os números do teu teclado (1-9) para preencher.
             </div>
 
-            <Controls onCheck={checkSolution} onNewGame={openNewGameModal} />
+            <Controls 
+                onCheck={checkSolution} 
+                onNewGame={openNewGameModal} 
+                onHint={handleHint}
+            />
 
             <DifficultyModal
                 isOpen={isModalOpen}
