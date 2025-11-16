@@ -10,6 +10,7 @@ const Game: React.FC = () => {
     const [isComplete, setIsComplete] = useState<boolean>(false);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
+    const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
     const handleCellClick = (
         row: number,
@@ -17,11 +18,11 @@ const Game: React.FC = () => {
         event: React.MouseEvent<HTMLDivElement>
     ) => {
         setSelectedCell({ row, col });
-        hiddenInputRef.current?.focus();
+        hiddenInputRef.current?.focus({ preventScroll: true });
 
         if (row > 3) {
             setTimeout(() => {
-                event.currentTarget.scrollIntoView({
+                scrollAnchorRef.current?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'nearest',
                 });
@@ -125,6 +126,8 @@ const Game: React.FC = () => {
             </div>
 
             <Controls onCheck={checkSolution} />
+
+            <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
         </div>
     );
 };
