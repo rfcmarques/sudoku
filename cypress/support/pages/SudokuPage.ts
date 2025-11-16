@@ -2,10 +2,12 @@
 
 export class SudokuPage {
     readonly texts = {
-        gameTitle: 'React Sudoku',
+        gameTitle: 'Sudoku',
+        newGameButton: 'Novo Jogo',
+        hintButton: 'Dica',
         checkButton: 'Verificar',
         wrongSolutionAlert: 'O Sudoku não está correto. Tente novamente!',
-        newGameButton: 'Novo Jogo',
+        noMoreHintsAlert: 'Não há células vazias para dar uma dica!',
         modalTitle: 'Escolha a Dificuldade',
         easyButton: 'Fácil',
         mediumButton: 'Médio',
@@ -23,14 +25,19 @@ export class SudokuPage {
     insertNumber(number: string | number) {
         cy.get('body').type(String(number));
     }
+    
+    clickNewGameButton() {
+        cy.contains(this.texts.newGameButton).click();
+    }
+
+    clickHintButton() {
+        cy.contains(this.texts.hintButton).click();
+    }
 
     clickCheckButton() {
         cy.contains(this.texts.checkButton).click();
     }
 
-    clickNewGameButton() {
-        cy.contains(this.texts.newGameButton).click();
-    }
 
     selectDifficulty(level: 'easy' | 'medium' | 'hard') {
         switch (level) {
@@ -60,10 +67,12 @@ export class SudokuPage {
         this.getCell(row, col).should('be.empty');
     }
 
-    interceptAlert(expectedText: string) {
-        cy.on('window:alert', (text) => {
-            expect(text).to.contains(expectedText);
-        });
+    wrongSolutionToastAppears() {
+        cy.contains(this.texts.wrongSolutionAlert).should('be.visible');
+    }
+
+    noMoreHintsToastAppears() {
+        cy.contains(this.texts.noMoreHintsAlert).should('be.visible');
     }
 
     modalShouldBeVisible() {

@@ -21,9 +21,8 @@ describe('Sudoku Game', () => {
     sudokuPage.insertNumber(9);
     sudokuPage.cellShouldContain(0, 2, 9);
 
-    sudokuPage.interceptAlert(sudokuPage.texts.wrongSolutionAlert);
-
     sudokuPage.clickCheckButton();
+    sudokuPage.wrongSolutionToastAppears();
   });
 
   it('should not allow changing initial numbers', () => {
