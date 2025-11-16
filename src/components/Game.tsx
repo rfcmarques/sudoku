@@ -80,7 +80,7 @@ const Game: React.FC = () => {
         const newBoard = board.map(rowArray => [...rowArray]);
         newBoard[row][col] = value;
         setBoard(newBoard);
-    }, [selectedCell, board, isComplete, currentPuzzle]);
+    }, [selectedCell, board, currentPuzzle]);
 
 
     useEffect(() => {
