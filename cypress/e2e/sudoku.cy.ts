@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import { SudokuPage } from "../support/pages/SudokuPage";
 
 const sudokuPage = new SudokuPage();
@@ -29,5 +31,19 @@ describe('Sudoku Game', () => {
     sudokuPage.insertNumber(3);
     sudokuPage.cellShouldContain(0, 0, 5);
     sudokuPage.cellShouldNotContain(0, 0, 3);
+  });
+
+  it('should allow starting a new game and reset the board', () => {
+    sudokuPage.clickCell(0, 2);
+    sudokuPage.insertNumber(9);
+    sudokuPage.cellShouldContain(0, 2, 9);
+
+    sudokuPage.clickNewGameButton();
+    sudokuPage.modalShouldBeVisible();
+
+    sudokuPage.selectDifficulty('easy');
+
+    sudokuPage.modalShouldNotExist();
+    sudokuPage.cellShouldBeEmpty(0, 2);
   });
 });

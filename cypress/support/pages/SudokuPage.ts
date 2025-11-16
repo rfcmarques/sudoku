@@ -1,10 +1,17 @@
+/// <reference types="cypress" />
+
 export class SudokuPage {
     readonly texts = {
         gameTitle: 'React Sudoku',
         checkButton: 'Verificar',
         wrongSolutionAlert: 'O Sudoku não está correto. Tente novamente!',
+        newGameButton: 'Novo Jogo',
+        modalTitle: 'Escolha a Dificuldade',
+        easyButton: 'Fácil',
+        mediumButton: 'Médio',
+        hardButton: 'Difícil',
     }
-    
+
     visit() {
         cy.visit('/');
     }
@@ -19,6 +26,24 @@ export class SudokuPage {
 
     clickCheckButton() {
         cy.contains(this.texts.checkButton).click();
+    }
+
+    clickNewGameButton() {
+        cy.contains(this.texts.newGameButton).click();
+    }
+
+    selectDifficulty(level: 'easy' | 'medium' | 'hard') {
+        switch (level) {
+            case 'easy':
+                cy.contains(this.texts.easyButton).click();
+                break;
+            case 'medium':
+                cy.contains(this.texts.mediumButton).click();
+                break;
+            case 'hard':
+                cy.contains(this.texts.hardButton).click();
+                break;
+        }
     }
 
     // --- ASSERTIONS ---
@@ -39,6 +64,17 @@ export class SudokuPage {
         cy.on('window:alert', (text) => {
             expect(text).to.contains(expectedText);
         });
+    }
+
+    modalShouldBeVisible() {
+        cy.contains(this.texts.modalTitle).should('be.visible');
+        cy.contains(this.texts.easyButton).should('be.visible');
+        cy.contains(this.texts.mediumButton).should('be.visible');
+        cy.contains(this.texts.hardButton).should('be.visible');
+    }
+
+    modalShouldNotExist() {
+        cy.contains(this.texts.modalTitle).should('not.exist');
     }
 
     protected getCell(row: number, col: number) {
