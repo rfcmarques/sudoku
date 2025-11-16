@@ -1,12 +1,12 @@
 import React from 'react';
 import type { CellValue } from '../types/types';
-import { initialBoard } from '../utils/sudoku';
 
 interface CellProps {
     value: CellValue;
     rowIndex: number;
     colIndex: number;
     isSelected: boolean;
+    isInitialValue: boolean;
     onCellClick: (
         row: number,
         col: number,
@@ -18,6 +18,7 @@ const Cell: React.FC<CellProps> = ({
     rowIndex,
     colIndex,
     isSelected,
+    isInitialValue,
     onCellClick,
 }) => {
     // Lógica para as bordas dos blocos 3x3
@@ -29,7 +30,9 @@ const Cell: React.FC<CellProps> = ({
     };
 
     const selectedClass = isSelected ? 'bg-blue-200' : 'bg-white';
-    const initialValueClass = initialBoard[rowIndex][colIndex] !== 0 ? 'font-bold text-slate-900' : 'text-sky-700';
+    const valueClass = isInitialValue
+        ? 'font-bold text-slate-900'
+        : 'text-sky-700 font-medium';
 
     return (
         <div
@@ -42,7 +45,7 @@ const Cell: React.FC<CellProps> = ({
               ${getBorderClasses()} 
               border-gray-800
               ${selectedClass}
-              ${initialValueClass}
+              ${valueClass}
             `}
             data-testid={`cell-${rowIndex}-${colIndex}`}
             onClick={() => onCellClick(rowIndex, colIndex)}

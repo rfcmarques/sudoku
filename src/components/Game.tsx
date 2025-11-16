@@ -1,16 +1,35 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import type { Board as BoardType, CellPosition, CellValue } from '../types/types';
-import { initialBoard, solutionBoard } from '../utils/sudoku';
+import type {
+    Board as BoardType,
+    CellPosition,
+    CellValue,
+    Puzzle
+} from '../types/types';
+import { puzzles } from '../utils/puzzles';
 import Board from './Board';
 import Controls from './Controls';
 
+const getRandomPuzzle = (): Puzzle => {
+    const randomIndex = Math.floor(Math.random() * puzzles.length);
+    return puzzles[randomIndex];
+};
+
 const Game: React.FC = () => {
-    const [board, setBoard] = useState<BoardType>(initialBoard);
+    const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(getRandomPuzzle());
+    const [board, setBoard] = useState<BoardType>(currentPuzzle.board);
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isComplete, setIsComplete] = useState<boolean>(false);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const scrollAnchorRef = useRef<HTMLDivElement>(null);
+
+    const startNewGame = () => {
+        const newPuzzle = getRandomPuzzle();
+        setCurrentPuzzle(newPuzzle);
+        setBoard(newPuzzle.board);
+        setSelectedCell(null);
+        setIsComplete(false);
+    }
 
     const handleCellClick = (
         row: number,
@@ -34,12 +53,12 @@ const Game: React.FC = () => {
 
         const { row, col } = selectedCell;
 
-        if (initialBoard[row][col] !== 0) return;
+        if (currentPuzzle.board[row][col] !== 0) return;
 
         const newBoard = board.map(rowArray => [...rowArray]);
         newBoard[row][col] = value;
         setBoard(newBoard);
-    }, [selectedCell, board]);
+    }, [selectedCell, board, isComplete, currentPuzzle]);
 
 
     useEffect(() => {
@@ -82,14 +101,15 @@ const Game: React.FC = () => {
 
     const checkSolution = () => {
         const currentBoardStr = JSON.stringify(board);
-        const solutionBoardStr = JSON.stringify(solutionBoard);
+        const solutionBoardStr = JSON.stringify(currentPuzzle.solution);
 
-        if (currentBoardStr === solutionBoardStr) {
-            setIsComplete(true);
-            setSelectedCell(null);
-        } else {
+        if (currentBoardStr !== solutionBoardStr) {
             alert('O Sudoku não está correto. Tente novamente!');
+            return;
         }
+
+        setIsComplete(true);
+        setSelectedCell(null);
     }
 
     return (
@@ -101,7 +121,8 @@ const Game: React.FC = () => {
             )}
 
             <Board
-                board={board}
+                currentBoard={board}
+                initialBoard={currentPuzzle.board}
                 onCellClick={handleCellClick}
                 selectedCell={selectedCell}
             />
@@ -124,7 +145,7 @@ const Game: React.FC = () => {
                 Selecione uma célula e use os números do teu teclado (1-9) para preencher.
             </div>
 
-            <Controls onCheck={checkSolution} />
+            <Controls onCheck={checkSolution} onNewGame={startNewGame} />
 
             <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
         </div>

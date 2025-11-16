@@ -3,7 +3,8 @@ import type { Board as BoardType, CellPosition } from '../types/types';
 import Cell from './Cell';
 
 interface BoardProps {
-    board: BoardType;
+    currentBoard: BoardType;
+    initialBoard: BoardType;
     selectedCell: CellPosition;
     onCellClick: (
         row: number,
@@ -11,7 +12,12 @@ interface BoardProps {
     ) => void;
 }
 
-const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
+const Board: React.FC<BoardProps> = ({
+    currentBoard,
+    initialBoard,
+    selectedCell,
+    onCellClick
+}) => {
     return (
         <div className="
             grid grid-cols-9 
@@ -19,7 +25,7 @@ const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
             mx-auto my-5
             border-4 border-gray-800 
         ">
-            {board.map((row, rowIndex) =>
+            {currentBoard.map((row, rowIndex) =>
                 row.map((cellValue, colIndex) => (
                     <Cell
                         key={`${rowIndex}-${colIndex}`}
@@ -30,6 +36,7 @@ const Board: React.FC<BoardProps> = ({ board, selectedCell, onCellClick }) => {
                         isSelected={
                             selectedCell?.row === rowIndex && selectedCell?.col === colIndex
                         }
+                        isInitialValue={initialBoard[rowIndex][colIndex] !== 0}
                     />
                 ))
             )}

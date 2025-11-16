@@ -6,3 +6,11 @@ export type CellPosition = {
     row: number;
     col: number;
 } | null;
+
+export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'test';
+
+export type Puzzle = {
+    level: DifficultyLevel;
+    board: Board;
+    solution: Board;
+}
