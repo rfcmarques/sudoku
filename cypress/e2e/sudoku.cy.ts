@@ -45,4 +45,12 @@ describe('Sudoku Game', () => {
     sudokuPage.modalShouldNotExist();
     sudokuPage.cellShouldBeEmpty(0, 2);
   });
+
+  it('should fill a random cell when hint button is clicked', () => {
+    sudokuPage.getEmptyCells().its('length').then((initialEmptyCount) => {
+      sudokuPage.clickHintButton();
+
+      sudokuPage.getEmptyCells().its('length').should('eq', initialEmptyCount - 1);
+    });
+  });
 });

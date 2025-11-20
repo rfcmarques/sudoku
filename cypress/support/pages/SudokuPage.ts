@@ -53,6 +53,10 @@ export class SudokuPage {
         }
     }
 
+    getEmptyCells() {
+        return cy.get('[data-testid^="cell-"]:empty')
+    }
+
     // --- ASSERTIONS ---
 
     cellShouldContain(row: number, col: number, number: string | number) {
