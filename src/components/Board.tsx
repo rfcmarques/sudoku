@@ -10,13 +10,17 @@ interface BoardProps {
         row: number,
         col: number
     ) => void;
+    hiddenInputRef: React.RefObject<HTMLInputElement | null>;
+    onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Board: React.FC<BoardProps> = ({
     currentBoard,
     initialBoard,
     selectedCell,
-    onCellClick
+    onCellClick,
+    hiddenInputRef,
+    onInputChange
 }) => {
     return (
         <div className="
@@ -39,6 +43,25 @@ const Board: React.FC<BoardProps> = ({
                         isInitialValue={initialBoard[rowIndex][colIndex] !== 0}
                     />
                 ))
+            )}
+            {selectedCell && (
+                <input
+                    ref={hiddenInputRef}
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    onChange={onInputChange}
+                    style={{
+                        gridColumn: selectedCell.col + 1,
+                        gridRow: selectedCell.row + 1,
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 10
+                    }}
+                    autoFocus
+                />
             )}
         </div>
     );
