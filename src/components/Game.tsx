@@ -35,6 +35,7 @@ const Game: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
+    const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
     const startNewGame = (level: DifficultyLevel) => {
         const newPuzzle = getPuzzleByLevel(level);
@@ -60,7 +61,14 @@ const Game: React.FC = () => {
         setSelectedCell({ row, col });
         hiddenInputRef.current?.focus({ preventScroll: true });
 
-
+        if (row > 3) {
+            setTimeout(() => {
+                scrollAnchorRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                });
+            }, 500);
+        }
     };
 
     const handleNumberInput = useCallback((value: CellValue) => {
@@ -166,9 +174,23 @@ const Game: React.FC = () => {
                 initialBoard={currentPuzzle.board}
                 onCellClick={handleCellClick}
                 selectedCell={selectedCell}
-                hiddenInputRef={hiddenInputRef}
-                onInputChange={handleMobileInputChange}
             />
+
+            <input
+                ref={hiddenInputRef}
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                onChange={handleMobileInputChange}
+                style={{
+                    position: 'absolute',
+                    opacity: 0,
+                    top: '1px',
+                    left: '1px',
+                }}
+            />
+
+            <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
 
             <div className="mt-4 text-center text-gray-500">
                 Selecione uma célula e use os números do teu teclado (1-9) para preencher.
