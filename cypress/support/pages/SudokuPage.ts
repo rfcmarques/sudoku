@@ -5,7 +5,7 @@ export class SudokuPage {
         gameTitle: 'Sudoku',
         newGameButton: 'Novo Jogo',
         hintButton: 'Dica',
-        checkButton: 'Verificar',
+        checkButton: 'Validar',
         wrongSolutionAlert: 'O Sudoku não está correto. Tente novamente!',
         noMoreHintsAlert: 'Não há células vazias para dar uma dica!',
         modalTitle: 'Escolha a Dificuldade',
