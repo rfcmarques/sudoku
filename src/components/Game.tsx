@@ -33,6 +33,7 @@ const Game: React.FC = () => {
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isComplete, setIsComplete] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [hintCount, setHintCount] = useState<number>(0);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const scrollAnchorRef = useRef<HTMLDivElement>(null);
@@ -151,6 +152,11 @@ const Game: React.FC = () => {
             return;
         }
 
+        if (hintCount >= 3) {
+            toast.error('Não há mais dicas disponíveis!');
+            return;
+        }
+
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         const { row, col } = randomCell;
 
@@ -159,6 +165,7 @@ const Game: React.FC = () => {
         const newBoard = board.map(rowArray => [...rowArray]);
         newBoard[row][col] = solutionValue;
         setBoard(newBoard);
+        setHintCount(prev => prev + 1);
     }
 
     return (
@@ -200,6 +207,7 @@ const Game: React.FC = () => {
                 onCheck={checkSolution}
                 onNewGame={openNewGameModal}
                 onHint={handleHint}
+                hintCount={hintCount}
             />
 
             <DifficultyModal
