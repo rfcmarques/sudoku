@@ -44,6 +44,7 @@ const Game: React.FC = () => {
         setBoard(newPuzzle.board);
         setSelectedCell(null);
         setIsComplete(false);
+        setHintCount(0);
     }
 
     const handleSelectDifficulty = (level: DifficultyLevel) => {
