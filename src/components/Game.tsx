@@ -9,6 +9,8 @@ import Board from '@/components/Board';
 import Controls from '@/components/Controls';
 import DifficultyModal from '@/components/DifficultyModal';
 import { useGameState } from '@/hooks/useGameState';
+import { useAutoScroll } from '@/hooks/useAutoScroll';
+import { useKeyboardInput } from '@/hooks/useKeyboardInput';
 
 const Game: React.FC = () => {
     const {
@@ -26,8 +28,15 @@ const Game: React.FC = () => {
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    const hiddenInputRef = useRef<HTMLInputElement>(null);
-    const scrollAnchorRef = useRef<HTMLDivElement>(null);
+    const { hiddenInputRef, scrollAnchorRef, focusAndScroll } = useAutoScroll();
+
+    const isKeyboardEnabled = !!selectedCell && !isComplete && !isModalOpen;
+
+    useKeyboardInput((value) => {
+        if (selectedCell) {
+            updateCell(selectedCell.row, selectedCell.col, value);
+        }
+    }, isKeyboardEnabled);
 
     const handleSelectDifficulty = (level: DifficultyLevel) => {
         startNewGame(level);
@@ -35,59 +44,23 @@ const Game: React.FC = () => {
         setIsModalOpen(false);
     }
 
+    const handleCellClick = (row: number, col: number) => {
+        setSelectedCell({ row, col });
+        focusAndScroll(row);
+    };
+
     const openNewGameModal = () => {
         setIsModalOpen(true);
     }
 
-    const handleCellClick = (
-        row: number,
-        col: number
-    ) => {
-        setSelectedCell({ row, col });
-        hiddenInputRef.current?.focus({ preventScroll: true });
-
-        if (row > 3) {
-            setTimeout(() => {
-                scrollAnchorRef.current?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                });
-            }, 500);
-        }
-    };
-
-    const handleNumberInput = (value: CellValue) => {
-        if (!selectedCell) return;
-        updateCell(selectedCell.row, selectedCell.col, value);
-    };
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (!selectedCell) return;
-
-            if (event.key >= '1' && event.key <= '9') {
-                handleNumberInput(parseInt(event.key, 10) as CellValue);
-            }
-
-            if (['Backspace', 'Delete', '0'].includes(event.key)) {
-                handleNumberInput(0);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedCell, updateCell]);
-
     const handleMobileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-
-        if (value === '') return;
+        if (value === '' || !selectedCell) return;
 
         const lastDigit = value.slice(-1);
 
         if (lastDigit >= '1' && lastDigit <= '9') {
-            handleNumberInput(parseInt(lastDigit, 10) as CellValue);
+            updateCell(selectedCell.row, selectedCell.col, parseInt(lastDigit, 10) as any);
         }
 
         e.target.value = '';
@@ -114,14 +87,8 @@ const Game: React.FC = () => {
                 inputMode="numeric"
                 pattern="[0-9]*"
                 onChange={handleMobileInputChange}
-                style={{
-                    position: 'absolute',
-                    opacity: 0,
-                    top: '1px',
-                    left: '1px',
-                }}
+                style={{ position: 'absolute', opacity: 0, top: '1px', left: '1px' }}
             />
-
             <div ref={scrollAnchorRef} style={{ height: '1px', width: '1px' }} />
 
             <div className="mt-4 text-center text-gray-500">
@@ -130,7 +97,7 @@ const Game: React.FC = () => {
 
             <Controls
                 onCheck={checkSolution}
-                onNewGame={openNewGameModal}
+                onNewGame={() => setIsModalOpen(true)}
                 onHint={useHint}
                 hintCount={hintCount}
             />
