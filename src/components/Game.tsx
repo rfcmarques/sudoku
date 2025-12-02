@@ -13,6 +13,7 @@ import { puzzles } from '../utils/puzzles';
 import Board from './Board';
 import Controls from './Controls';
 import DifficultyModal from './DifficultyModal';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const getPuzzleByLevel = (level: DifficultyLevel): Puzzle => {
     const filteredPuzzles = puzzles.filter(
@@ -28,12 +29,12 @@ const getPuzzleByLevel = (level: DifficultyLevel): Puzzle => {
 }
 
 const Game: React.FC = () => {
-    const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(getPuzzleByLevel('easy'));
-    const [board, setBoard] = useState<BoardType>(currentPuzzle.board);
+    const [currentPuzzle, setCurrentPuzzle] = useLocalStorage<Puzzle>('currentPuzzle', getPuzzleByLevel('medium'));
+    const [board, setBoard] = useLocalStorage<BoardType>('board', currentPuzzle.board);
+    const [isComplete, setIsComplete] = useLocalStorage<boolean>('isComplete', false);
+    const [hintCount, setHintCount] = useLocalStorage<number>('hintCount', 0);
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
-    const [isComplete, setIsComplete] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [hintCount, setHintCount] = useState<number>(0);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const scrollAnchorRef = useRef<HTMLDivElement>(null);
