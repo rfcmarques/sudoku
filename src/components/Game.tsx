@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import type {
-    CellPosition,
-    CellValue,
-    DifficultyLevel,
-} from '@/types/types';
+import React, { useState } from 'react';
+import type { CellPosition, CellValue, DifficultyLevel } from '@/types/types';
 
 import Board from '@/components/Board';
 import Controls from '@/components/Controls';
@@ -49,10 +45,6 @@ const Game: React.FC = () => {
         focusAndScroll(row);
     };
 
-    const openNewGameModal = () => {
-        setIsModalOpen(true);
-    }
-
     const handleMobileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (value === '' || !selectedCell) return;
@@ -60,7 +52,7 @@ const Game: React.FC = () => {
         const lastDigit = value.slice(-1);
 
         if (lastDigit >= '1' && lastDigit <= '9') {
-            updateCell(selectedCell.row, selectedCell.col, parseInt(lastDigit, 10) as any);
+            updateCell(selectedCell.row, selectedCell.col, parseInt(lastDigit, 10) as CellValue);
         }
 
         e.target.value = '';
