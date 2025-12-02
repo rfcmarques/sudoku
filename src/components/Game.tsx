@@ -1,55 +1,37 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect, useRef } from 'react';
 import type {
-    Board as BoardType,
     CellPosition,
     CellValue,
     DifficultyLevel,
-    Puzzle
 } from '../types/types';
-
-import { puzzles } from '../utils/puzzles';
 
 import Board from './Board';
 import Controls from './Controls';
 import DifficultyModal from './DifficultyModal';
-import useLocalStorage from '../hooks/useLocalStorage';
-
-const getPuzzleByLevel = (level: DifficultyLevel): Puzzle => {
-    const filteredPuzzles = puzzles.filter(
-        (puzzle) => puzzle.level === level
-    );
-
-    if (filteredPuzzles.length === 0) {
-        return puzzles.find(p => p.level === 'easy')!;
-    }
-
-    const randomIndex = Math.floor(Math.random() * filteredPuzzles.length);
-    return filteredPuzzles[randomIndex];
-}
+import { useGameState } from '../hooks/useGameState';
 
 const Game: React.FC = () => {
-    const [currentPuzzle, setCurrentPuzzle] = useLocalStorage<Puzzle>('currentPuzzle', getPuzzleByLevel('medium'));
-    const [board, setBoard] = useLocalStorage<BoardType>('board', currentPuzzle.board);
-    const [isComplete, setIsComplete] = useLocalStorage<boolean>('isComplete', false);
-    const [hintCount, setHintCount] = useLocalStorage<number>('hintCount', 0);
+    const {
+        board,
+        currentPuzzle,
+        hintCount,
+        isComplete,
+
+        startNewGame,
+        updateCell,
+        useHint,
+        checkSolution
+    } = useGameState();
+
     const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
-    const startNewGame = (level: DifficultyLevel) => {
-        const newPuzzle = getPuzzleByLevel(level);
-        setCurrentPuzzle(newPuzzle);
-        setBoard(newPuzzle.board);
-        setSelectedCell(null);
-        setIsComplete(false);
-        setHintCount(0);
-    }
-
     const handleSelectDifficulty = (level: DifficultyLevel) => {
         startNewGame(level);
+        setSelectedCell(null);
         setIsModalOpen(false);
     }
 
@@ -74,41 +56,28 @@ const Game: React.FC = () => {
         }
     };
 
-    const handleNumberInput = useCallback((value: CellValue) => {
+    const handleNumberInput = (value: CellValue) => {
         if (!selectedCell) return;
-
-        const { row, col } = selectedCell;
-
-        if (currentPuzzle.board[row][col] !== 0) return;
-
-        const newBoard = board.map(rowArray => [...rowArray]);
-        newBoard[row][col] = value;
-        setBoard(newBoard);
-    }, [selectedCell, board, currentPuzzle]);
-
+        updateCell(selectedCell.row, selectedCell.col, value);
+    };
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-
             if (!selectedCell) return;
 
             if (event.key >= '1' && event.key <= '9') {
-                const number = parseInt(event.key, 10) as CellValue;
-                handleNumberInput(number);
+                handleNumberInput(parseInt(event.key, 10) as CellValue);
             }
 
-            if (event.key === 'Backspace' || event.key === 'Delete' || event.key === '0') {
+            if (['Backspace', 'Delete', '0'].includes(event.key)) {
                 handleNumberInput(0);
             }
-
-        }
+        };
 
         window.addEventListener('keydown', handleKeyDown);
 
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        }
-    }, [selectedCell, handleNumberInput, isComplete]);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedCell, updateCell]);
 
     const handleMobileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -118,57 +87,11 @@ const Game: React.FC = () => {
         const lastDigit = value.slice(-1);
 
         if (lastDigit >= '1' && lastDigit <= '9') {
-            const number = parseInt(lastDigit, 10) as CellValue;
-            handleNumberInput(number);
+            handleNumberInput(parseInt(lastDigit, 10) as CellValue);
         }
 
         e.target.value = '';
     };
-
-    const checkSolution = () => {
-        const currentBoardStr = JSON.stringify(board);
-        const solutionBoardStr = JSON.stringify(currentPuzzle.solution);
-
-        if (currentBoardStr !== solutionBoardStr) {
-            toast.error('O Sudoku não está correto. Tente novamente!');
-            return;
-        }
-
-        setIsComplete(true);
-        setSelectedCell(null);
-    }
-
-    const handleHint = () => {
-        const emptyCells: { row: number; col: number }[] = [];
-
-        board.forEach((row, rIndex) => {
-            row.forEach((cellValue, cIndex) => {
-                if (cellValue === 0) {
-                    emptyCells.push({ row: rIndex, col: cIndex });
-                }
-            })
-        })
-
-        if (emptyCells.length === 0) {
-            toast.error('Não há células vazias para dar uma dica!');
-            return;
-        }
-
-        if (hintCount >= 3) {
-            toast.error('Não há mais dicas disponíveis!');
-            return;
-        }
-
-        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-        const { row, col } = randomCell;
-
-        const solutionValue = currentPuzzle.solution[row][col];
-
-        const newBoard = board.map(rowArray => [...rowArray]);
-        newBoard[row][col] = solutionValue;
-        setBoard(newBoard);
-        setHintCount(prev => prev + 1);
-    }
 
     return (
         <div className="game p-4 sm:p-6 bg-white rounded-xl shadow-lg">
@@ -208,7 +131,7 @@ const Game: React.FC = () => {
             <Controls
                 onCheck={checkSolution}
                 onNewGame={openNewGameModal}
-                onHint={handleHint}
+                onHint={useHint}
                 hintCount={hintCount}
             />
 

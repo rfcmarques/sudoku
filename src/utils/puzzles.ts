@@ -1,4 +1,4 @@
-import type { Puzzle } from '../types/types';
+import type { DifficultyLevel, Puzzle } from '../types/types';
 
 export const puzzles: Puzzle[] = [
     {
@@ -76,4 +76,17 @@ export const puzzles: Puzzle[] = [
             [8, 3, 4, 7, 4, 5, 8, 6, 9],
         ],
     }
-]
+];
+
+export const getPuzzleByLevel = (level: DifficultyLevel): Puzzle => {
+    const filteredPuzzles = puzzles.filter(
+        (puzzle) => puzzle.level === level
+    );
+
+    if (filteredPuzzles.length === 0) {
+        return puzzles.find(p => p.level === 'easy') || puzzles[0];
+    }
+
+    const randomIndex = Math.floor(Math.random() * filteredPuzzles.length);
+    return filteredPuzzles[randomIndex];
+}
