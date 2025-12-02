@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { SudokuPage } from "../support/pages/SudokuPage";
+import { SudokuPage } from "@cypress/support/pages/SudokuPage";
 
 const sudokuPage = new SudokuPage();
 

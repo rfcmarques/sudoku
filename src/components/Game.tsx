@@ -3,12 +3,12 @@ import type {
     CellPosition,
     CellValue,
     DifficultyLevel,
-} from '../types/types';
+} from '@/types/types';
 
-import Board from './Board';
-import Controls from './Controls';
-import DifficultyModal from './DifficultyModal';
-import { useGameState } from '../hooks/useGameState';
+import Board from '@/components/Board';
+import Controls from '@/components/Controls';
+import DifficultyModal from '@/components/DifficultyModal';
+import { useGameState } from '@/hooks/useGameState';
 
 const Game: React.FC = () => {
     const {

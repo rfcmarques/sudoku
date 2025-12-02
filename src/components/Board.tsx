@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Board as BoardType, CellPosition } from '../types/types';
-import Cell from './Cell';
+import type { Board as BoardType, CellPosition } from '@/types/types';
+import Cell from '@/components/Cell';
 
 interface BoardProps {
     currentBoard: BoardType;

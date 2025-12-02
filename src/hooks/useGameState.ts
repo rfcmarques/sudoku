@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import type { Board, CellValue, DifficultyLevel, Puzzle } from "../types/types";
-import useLocalStorage from "./useLocalStorage";
-import { getPuzzleByLevel } from "../utils/puzzles";
+import type { Board, CellValue, DifficultyLevel, Puzzle } from "@/types/types";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import { getPuzzleByLevel } from "@/utils/puzzles";
 import toast from "react-hot-toast";
 
 export const useGameState = () => {

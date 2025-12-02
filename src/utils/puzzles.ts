@@ -1,4 +1,4 @@
-import type { DifficultyLevel, Puzzle } from '../types/types';
+import type { DifficultyLevel, Puzzle } from '@/types/types';
 
 export const puzzles: Puzzle[] = [
     {

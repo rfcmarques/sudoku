@@ -1,5 +1,5 @@
 import type React from "react";
-import type { DifficultyLevel } from "../types/types";
+import type { DifficultyLevel } from "@/types/types";
 
 interface DifficultyModalProps {
     isOpen: boolean;
