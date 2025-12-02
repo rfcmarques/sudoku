@@ -53,4 +53,12 @@ describe('Sudoku Game', () => {
       sudokuPage.getEmptyCells().its('length').should('eq', initialEmptyCount - 1);
     });
   });
+
+  it('should disable hint button after 3 uses', () => {
+    for (let i = 0; i < 3; i++) {
+      sudokuPage.clickHintButton();
+    }
+
+    sudokuPage.hintButtonShouldBeDisabled();
+  });
 });

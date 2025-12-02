@@ -90,6 +90,10 @@ export class SudokuPage {
         cy.contains(this.texts.modalTitle).should('not.exist');
     }
 
+    hintButtonShouldBeDisabled() {
+        cy.contains(this.texts.hintButton).should('be.disabled');
+    }
+
     protected getCell(row: number, col: number) {
         return cy.get(`[data-testid="cell-${row}-${col}"]`);
     }
